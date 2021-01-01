@@ -1,36 +1,62 @@
-import data from "./data.js"
-import {createTableElements} from "./main.js";
+import data from "./data.js";
+import { createTableElements } from "./main.js";
 
-/*
-  ALWAYS USE IMPORTED data ARRAY TO MAKE MANIPULATIONS
+const checkPopulation = document.querySelector("#populationBigger");
+const checkLandArea = document.querySelector("#landAreaLess");
+const populationQuestion = document.querySelector("#isPopulationLess");
+const landAreaQuestion = document.querySelector("#isLandBigger");
+const selectCity = document.querySelector("#inputGroupSelect01");
+const resetButton = document.querySelector("#reset");
 
-  ID for allcities table is #allcities
-  ID for singlecity table is #singlecity
-/*
-
-/*
-* PASS ARRAY TO createTableElements function to fill tables
-* first argument - data
-* second argument - tableId
-* Example createTableElements([{name: "Istanbul"}], "allcities");
-*/
-
-/*
-    ids for buttons and select
-
-    Population - bigger than 500.000 => #populationBigger
-    land area - less than 1000 => #landAreaLess
-    Does any city has population less than 100.000? => #isPopulationLess
-    Does every city has land area bigger than 100? => #isLandBigger
-    city select => #selectcity
-*/
 
 /* RESET ACTION */
-document.querySelector("#reset").addEventListener("click", () => {
-    createTableElements(data, "allcities");
-    createTableElements([], "singlecity")
+resetButton.addEventListener("click", () => {
+  createTableElements(data, "allcities");
+  createTableElements([], "singlecity");
+  selectCity.value = "Choose...";
 });
 
-/* START CODING HERE */
+/* CHECK POPULATION BIGGER THAN 500.000 */
+checkPopulation.addEventListener("click", () => {
+  const populationResult = data.filter((city) => city.population > 500000);
+  createTableElements(populationResult, "allcities");
+});
 
+/* CHECK LAND AREA LESS THAN 1000 */
+checkLandArea.addEventListener("click", () => {
+  const landAreaResult = data.filter((city) => city.landArea < 1000);
+  createTableElements(landAreaResult, "allcities");
+});
 
+/* CHECK ANY CITY HAS POPULATION LESS THAN 100.000 */
+populationQuestion.addEventListener("click", () => {
+  const isPopulationLess = data.some((city) => city.population < 100000);
+  isPopulationLess ? alert("Yes") : alert("No");
+});
+
+/* CHECK EVERY CITY HAS LAND AREA BIGGER THAN 100 */
+landAreaQuestion.addEventListener("click", () => {
+  const isLandArea = data.every((city) => city.landArea > 100);
+  isLandArea ? alert("Yes") : alert("No");
+});
+
+/* SELECT CITY */
+
+const selectOptions = (data) => {
+  const selectOptionElement = document.querySelector("#inputGroupSelect01");
+  data.forEach((city) => {
+    const cityOption = document.createElement("option");
+    cityOption.text = city.name;
+    cityOption.value = city.name;
+    selectOptionElement.appendChild(cityOption);
+  });
+};
+
+selectOptions(data);
+
+/* FOUND ITEM */
+selectCity.addEventListener("change", (event) => {
+  let selectedCityName = event.target.value;
+  const selectedCity = data.find((city) => selectedCityName === city.name);
+  createTableElements([selectedCity], "singlecity");
+});
